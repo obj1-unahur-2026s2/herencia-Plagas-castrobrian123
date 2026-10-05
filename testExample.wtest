@@ -1,9 +1,78 @@
-import example.pepita
+import example.*
 
-describe "group of tests for pepita" {
+const hogar = new Hogar(
+    mugre = 20,
+    confort = 50
+)
 
-  test "pepita has initial energy" {
-    assert.equals(100, pepita.energy())
-  }
+const huerta = new Huerta(
+    capacidadProduccion = 150
+)
+
+const mascota = new Mascota(
+    salud = 300
+)
+
+const barrio = new Barrio(
+    elementos = [hogar, huerta, mascota]
+)
+
+//
+
+const cucarachas = new Cucarachas(
+    poblacion = 30,
+    pesoPromedio = 8
+)
+
+const pulgas = new Pulgas(
+    poblacion = 20
+)
+
+const garrapatas = new Garrapatas(
+    poblacion = 20
+)
+
+const mosquitos = new Mosquitos(
+    poblacion = 12
+)
+
+describe "Nivel de daño" {
+
+    test "las cucarachas hacen la mitad de su población" {
+        assert.equals(15, cucarachas.nivelDeDanio())
+    }
+
+    test "las pulgas hacen el doble de su población" {
+        assert.equals(40, pulgas.nivelDeDanio())
+    }
+
+    test "las garrapatas hacen el doble de su población" {
+        assert.equals(40, garrapatas.nivelDeDanio())
+    }
+
+    test "los mosquitos hacen daño equivalente a su población" {
+        assert.equals(12, mosquitos.nivelDeDanio())
+    }
 
 }
+
+describe "Transmisión de enfermedades" {
+
+    test "las cucarachas de menos de 10 gramos no transmiten" {
+        assert.notThat(cucarachas.transmiteEnfermedades())
+    }
+
+    test "las pulgas transmiten si tienen al menos 10" {
+        assert.that(pulgas.transmiteEnfermedades())
+    }
+
+    test "las garrapatas transmiten si tienen al menos 10" {
+        assert.that(garrapatas.transmiteEnfermedades())
+    }
+
+    test "12 mosquitos transmiten porque es múltiplo de 3" {
+        assert.that(mosquitos.transmiteEnfermedades())
+    }
+
+}
+
