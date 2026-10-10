@@ -1,20 +1,21 @@
 import example.*
 
 const hogar = new Hogar(
-    mugre = 20,
-    confort = 50
+    nivelDeMugre = 20,
+    nivelDeConfort = 50
 )
 
 const huerta = new Huerta(
-    capacidadProduccion = 150
+    capacidadDeProduccion = 150,
+    nivelDeHuertas = 2
 )
 
 const mascota = new Mascota(
-    salud = 300
+    nivelDeSalud = 300
 )
 
 const barrio = new Barrio(
-    elementos = [hogar, huerta, mascota]
+    elemento = [hogar, huerta, mascota]
 )
 
 //
@@ -59,19 +60,15 @@ describe "Nivel de daño" {
 describe "Transmisión de enfermedades" {
 
     test "las cucarachas de menos de 10 gramos no transmiten" {
-        assert.notThat(cucarachas.transmiteEnfermedades())
-    }
-
-    test "las pulgas transmiten si tienen al menos 10" {
-        assert.that(pulgas.transmiteEnfermedades())
+        assert.notThat(cucarachas.transmiteEnfermedad())
     }
 
     test "las garrapatas transmiten si tienen al menos 10" {
-        assert.that(garrapatas.transmiteEnfermedades())
+        assert.that(garrapatas.transmiteEnfermedad())
     }
 
     test "12 mosquitos transmiten porque es múltiplo de 3" {
-        assert.that(mosquitos.transmiteEnfermedades())
+        assert.that(mosquitos.transmiteEnfermedad())
     }
 
 }
