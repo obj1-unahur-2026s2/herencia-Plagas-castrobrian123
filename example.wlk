@@ -1,126 +1,149 @@
 
-class Elemento {
 
-    method esBueno()
+class Barrio{
 
-    method recibirAtaque(plaga)
+    const elemento = [] 
+
+    method agregarElemento(unElemento) {
+        elemento.add(unElemento)
+    }
+
+    method cantidadDeNoBuenos(){
+        return elemento.count({e => not e.esBuena()}) //
+    }
+
+    method cantidadDeBuenos(){
+        return elemento.count({e => e.esBuena()})
+    }
+
+    method esCopado() = self.cantidadDeBuenos() > self.cantidadDeNoBuenos() //
+}
+
+class Elemento{
+    
+    method esBuena()
+
+    method efectoQueProduce(plaga)
 
 }
 
 class Hogar inherits Elemento {
 
-    var mugre
+    var nivelDeMugre
 
-    var confort
+    var nivelDeConfort 
+    
+    method nivelDeMugre() = nivelDeMugre
 
-    override method esBueno() = mugre <= confort / 2
+    method nivelDeConfort() = nivelDeConfort
 
-    override method recibirAtaque(plaga) {
-        mugre += plaga.nivelDeDanio()
+    override method esBuena() = self.nivelDeMugre() <= (self.nivelDeConfort() / 2)
+
+    override method efectoQueProduce(plaga){
+        nivelDeMugre = nivelDeMugre + plaga.nivelDeDanio()
     }
 
 }
 
 class Huerta inherits Elemento {
 
-    var capacidadProduccion
+    var capacidadDeProduccion
 
-    override method esBueno() = capacidadProduccion > 100
+    var nivelDeHuertas
 
-    override method recibirAtaque(plaga) {
+    method nivelDeHuertas() = nivelDeHuertas
 
-        if (plaga.transmiteEnfermedades()) {
-            capacidadProduccion -= 10
-        } else {
-            capacidadProduccion -= plaga.nivelDeDanio() * 0.1
+    method cambiarNivelDeHuertas(nuevoNivel) {
+        nivelDeHuertas = nuevoNivel 
+    }
+
+    method capacidadDeProduccion() = capacidadDeProduccion
+
+    override method esBuena() = self.capacidadDeProduccion() > self.nivelDeHuertas()
+
+    override method efectoQueProduce(plaga){
+
+        capacidadDeProduccion = capacidadDeProduccion - (plaga.nivelDeDanio() * 0.1)
+
+        if (plaga.transmiteEnfermedad()){
+            capacidadDeProduccion = capacidadDeProduccion - 10
         }
 
     }
 
 }
 
-class Mascota inherits Elemento {
+class Mascota inherits Elemento{
 
-    var salud
+    var nivelDeSalud
 
-    override method esBueno() = salud > 250
+    method nivelDeSalud() = nivelDeSalud
 
-    override method recibirAtaque(plaga) {
+    override method esBuena() = self.nivelDeSalud() > 250
 
-        if (plaga.transmiteEnfermedades()) {
-            salud -= plaga.nivelDeDanio()
+    override method efectoQueProduce(plaga){
+        if (plaga.transmiteEnfermedad()){
+            nivelDeSalud = nivelDeSalud - plaga.nivelDeDanio()
         }
-
     }
 
 }
-
-class Barrio {
-
-    var elementos
-
-    method esCopado() {
-        return
-            elementos.count { elemento =>     elemento.esBueno() } >
-            elementos.count { elemento => not elemento.esBueno() }
-    }
-
-}
-
 class Plaga {
 
     var poblacion
 
+    method poblacion() = poblacion
+
+    method transmiteEnfermedad() = self.poblacion() >= 10
+
     method nivelDeDanio()
 
-    method transmiteEnfermedades() {
-        return poblacion >= 10
+    method atacar(elemento){
+        elemento.efectoQueProduce(self)
+        self.efectoAtacar()
     }
 
-    method aumentarPoblacion() {
-        poblacion *= 1.1
-    }
-
-    method atacar(elemento) {
-        elemento.recibirAtaque(self)
-        self.aumentarPoblacion()
+    method efectoAtacar(){
+        poblacion = poblacion + (self.poblacion() * 0.1)
     }
 
 }
 
-class Cucarachas inherits Plaga {
+class Cucarachas inherits Plaga{ 
 
     var pesoPromedio
 
-    override method nivelDeDanio() = poblacion / 2
+    method pesoPromedio()= pesoPromedio
 
-    override method transmiteEnfermedades() = super() && pesoPromedio >= 10
+    override method nivelDeDanio() = self.poblacion() / 2
 
-    override method aumentarPoblacion() {
+    override method transmiteEnfermedad() = super() and self.pesoPromedio() >= 10
+
+    override method efectoAtacar() {
         super()
-        pesoPromedio += 2
+        pesoPromedio = pesoPromedio + 2
     }
 
 }
 
-class Pulgas inherits Plaga {
+class Pulgas inherits Plaga{
 
-    override method nivelDeDanio() = poblacion * 2
+    override method nivelDeDanio() = self.poblacion() * 2
 
 }
 
-class Garrapatas inherits Pulgas {
+class Garrapatas inherits Pulgas{
 
-    override method aumentarPoblacion() {
-        poblacion *= 1.2
+    override method efectoAtacar(){
+        poblacion = poblacion + (self.poblacion() * 0.2)
     }
 
 }
 
-class Mosquitos inherits Plaga {
+class Mosquitos inherits Plaga{
 
-    override method nivelDeDanio() = poblacion
+    override method nivelDeDanio() = self.poblacion()
 
-    override method transmiteEnfermedades() = super() && poblacion % 3 == 0
-
+    override method transmiteEnfermedad() = super() and self.poblacion() % 3 == 0
+   
 }
